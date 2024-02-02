@@ -32,22 +32,32 @@ def send_cc(channel, ccnum, val):
   output = mido.open_output(output_name)
   output.send(msg)
 
+les_states = [GPIO.LOW, GPIO.HIGH]
+
+def read_button_state(button):
+  btn_state =  GPIO.input(btn1)
+  midi_state = 127 * btn_state
+  send_cc(button_channel, button_cc_num, midi_state)
+  GPIO.output(self.led1, led_states[btn_state])
+
 # MAIN #
 if __name__=="__main__":
   GPIO.setmode(GPIO.BCM)
-  GPIO.setup(self.led1,GPIO.OUT)
-  GPIO.setup(self.led2,GPIO.OUT)
-  GPIO.setup(self.led3,GPIO.OUT)
-  GPIO.setup(self.led4,GPIO.OUT)
+  GPIO.setwarnings(False)
+  GPIO.setup(led1,GPIO.OUT)
+  GPIO.setup(led2,GPIO.OUT)
+  GPIO.setup(led3,GPIO.OUT)
+  GPIO.setup(led4,GPIO.OUT)
         
-  GPIO.setup(self.btn1,GPIO.IN)
-  GPIO.setup(self.btn2,GPIO.IN)
-  GPIO.setup(self.btn3,GPIO.IN)
-  GPIO.setup(self.btn4,GPIO.IN)
-  GPIO.setup(self.encoder_clk, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-  GPIO.setup(self.encoder_data, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-  GPIO.setup(self.encoder_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)  
-  GPIO.add_event_detect(dt_pin,GPIO.FALLING,callback=button_push)
+  GPIO.setup(btn1,GPIO.IN)
+  GPIO.setup(btn2,GPIO.IN)
+  GPIO.setup(btn3,GPIO.IN)
+  GPIO.setup(btn4,GPIO.IN)
+  GPIO.setup(rotary_clk, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+  GPIO.setup(rotary_data, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+  GPIO.setup(rotary_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)  
+        
+  GPIO.add_event_detect(btn1,GPIO.BOTH,callback=button_1_push)
 
   # rotary encoder
-  GPIO.add_event_detect(clk_pin,GPIO.BOTH,callback=rotary_callback)
+  #GPIO.add_event_detect(rotary_clk,GPIO.BOTH,callback=rotary_callback)
