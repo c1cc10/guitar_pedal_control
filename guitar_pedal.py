@@ -23,22 +23,26 @@ btn2 = 17
 btn3 = 15
 btn4 = 14
 
-encoder_clk = 20
-encoder_data = 26
-encoder_button = 21
+rotary_clk = 20
+rotary_data = 26
+rotary_button = 21
+
+led_states = [GPIO.LOW, GPIO.HIGH]
 
 def send_cc(channel, ccnum, val):
   msg = mido.Message('control_change', channel=channel, control=ccnum, value=val)
   output = mido.open_output(output_name)
   output.send(msg)
 
-les_states = [GPIO.LOW, GPIO.HIGH]
-
-def read_button_state(button):
-  btn_state =  GPIO.input(btn1)
+def read_button_state(button, led):
+  global led_states
+  btn_state =  GPIO.input(button)
   midi_state = 127 * btn_state
-  send_cc(button_channel, button_cc_num, midi_state)
-  GPIO.output(self.led1, led_states[btn_state])
+  send_cc(0, button, midi_state)
+  GPIO.output(led, led_states[btn_state])
+
+def button_1_push(btn):
+  read_button_state(btn1, led1)
 
 # MAIN #
 if __name__=="__main__":
@@ -56,8 +60,11 @@ if __name__=="__main__":
   GPIO.setup(rotary_clk, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
   GPIO.setup(rotary_data, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
   GPIO.setup(rotary_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)  
-        
-  GPIO.add_event_detect(btn1,GPIO.BOTH,callback=button_1_push)
+  GPIO.add_event_detect(btn1, GPIO.BOTH, callback=button_1_push, bouncetime=220)
 
   # rotary encoder
   #GPIO.add_event_detect(rotary_clk,GPIO.BOTH,callback=rotary_callback)
+  # keep running
+  while True:
+    time.sleep(0.3)
+  GPIO.cleanup()
